@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Raphuml Test 1</title>
+    <script src="RaphUML.js" type="text/javascript" charset="utf-8"></script>
+    <script src="raphael-min-1.4.3.js" type="text/javascript" charset="utf-8"></script>
+
+    <script type="text/javascript" charset="utf-8">
+        window.onload = function () {
+
+            var paper = Raphael("canvas", 640, 480);
+
+            var diagram = RaphUML.classDiagram();
+
+            diagram.class("ClassDiagram", 0, 0)
+            .attribute("+id: int")
+            .attribute("+name: String");
+
+            diagram.class("Class", 200, 0)
+              .attribute("+name: String");
+
+            diagram.class("Attribute", 200, 200)
+              .attribute("+attributeString: String");
+
+            diagram.draw(paper);
+        };
+    </script>
+</head>
+<body>
+    <h1>Raphuml Test 1</h1>
+    <div id="canvas" style="width: 640px; height: 480px"></div>
+</body>
+</html>
+
