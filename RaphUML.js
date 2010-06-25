@@ -48,7 +48,7 @@ var RaphUML = function() {
      * They keep track of lists of Class and Association objects, and parameters
      * to control the drawing operation.
      *
-     * The `router` member points to a function that 
+     * The `router` member points to a function that
      */
     var ClassDiagram = function() {
 
@@ -141,13 +141,13 @@ var RaphUML = function() {
     }
 
     Class.prototype.draw = function(paper) {
-        
+
         paper.rect(this.x, this.y, this.width, this.height).attr({ fill: 'white' });
 
-        var text = paper.text(0, 0, this.name).attr({ 
-            'font-weight': 'bold', 
+        var text = paper.text(0, 0, this.name).attr({
+            'font-weight': 'bold',
             'font-size': this.classDiagram.headingFontSize,
-            x: this.x + this.width/2, 
+            x: this.x + this.width/2,
             y: this.y + this.classDiagram.headingVPad + this.classDiagram.headingFontSize/2
         });
 
@@ -214,7 +214,6 @@ var RaphUML = function() {
       && point.x <= Math.max(seg.x1, seg.x2)
       && Math.min(seg.y1, seg.y2) <= point.y
       && point.y <= Math.max(seg.y1, seg.y2);
-      
     }
 
     intersect({ x1: 0, y1: 0, x2: 4, y2: 4 }, { x1: 2, y1: 1, x2: 3, y2: 2 });
