@@ -1,7 +1,58 @@
+/*
+ * RaphUML.js
+ *
+ *
+ * The MIT License
+ *
+ * Copyright (c) 2010 John Krasnay
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 var RaphUML = function() {
 
+
+    /* straightLineRouter
+     *
+     * The default router function for class diagrams. The router
+     * function is responsible for drawing paths representing all
+     * assocations on a diagram.
+     */
+    var straightLineRouter = function(paper, classDiagram) {
+        for (var i = 0; i < classDiagram.associations.length; i++) {
+            var a = classDiagram.associations[i];
+            paper.path('M' + a.fromClass.cx() + ' ' + a.fromClass.cy() +
+                    'L' + a.toClass.cx() + ' ' + a.toClass.cy());
+        }
+    }
+
+
+    /* ClassDiagram
+     *
+     * Instances of ClassDiagram are responsible for drawing a class diagram.
+     * They keep track of lists of Class and Association objects, and parameters
+     * to control the drawing operation.
+     *
+     * The `router` member points to a function that 
+     */
     var ClassDiagram = function() {
 
+        this.associations = [];
         this.classes = [];
 
         this.bodyFontSize = 12;
@@ -10,6 +61,15 @@ var RaphUML = function() {
         this.defaultWidth = 120;
         this.headingFontSize = 12;
         this.headingVPad = 4;
+        this.router = straightLineRouter;
+    }
+
+    ClassDiagram.prototype.associationFrom = function (class, cardinality) {
+        var assoc = new Association();
+        assoc.fromClass = class;
+        assoc.fromCardinality = cardinality;
+        this.associations.push(assoc);
+        return assoc;
     }
 
     ClassDiagram.prototype.class = function (name, x, y) {
@@ -19,11 +79,35 @@ var RaphUML = function() {
     }
 
     ClassDiagram.prototype.draw = function(paper) {
+        this.router(paper, this);
         for (var i = 0; i < this.classes.length; i++) {
             this.classes[i].draw(paper);
         }
     }
 
+
+    /* Association
+     *
+     * Instances of this class represent associations between two
+     * classes. Associations do not draw themselves; instead, the class
+     * diagram is fitted with a router function that draws all the
+     * associations on the diagram with a particular algorithm.
+     */
+    var Association = function() {
+    }
+
+    Association.prototype.to = function (class, cardinality) {
+        this.toClass = class;
+        this.toCardinality = cardinality;
+    }
+
+
+
+    /* Class
+     *
+     * Instances of this class represent classes in the subject domain.
+     * Each instance draws itself via the draw method.
+     */
     var Class = function(classDiagram, name, x, y) {
         this.classDiagram = classDiagram;
         this.name = name;
@@ -48,9 +132,18 @@ var RaphUML = function() {
         return this;
     }
 
+    Class.prototype.cx = function() {
+        return this.x + this.width / 2;
+    }
+
+    Class.prototype.cy = function() {
+        return this.y + this.height / 2;
+    }
 
     Class.prototype.draw = function(paper) {
         
+        paper.rect(this.x, this.y, this.width, this.height).attr({ fill: 'white' });
+
         var text = paper.text(0, 0, this.name).attr({ 
             'font-weight': 'bold', 
             'font-size': this.classDiagram.headingFontSize,
@@ -72,7 +165,6 @@ var RaphUML = function() {
             y += this.classDiagram.bodyFontSize + this.classDiagram.bodyVPad;
         }
 
-        paper.rect(this.x, this.y, this.width, this.height);
     }
 
 

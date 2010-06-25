@@ -14,15 +14,18 @@
 
             var diagram = RaphUML.classDiagram();
 
-            diagram.class("ClassDiagram", 0, 0)
+            var cd = diagram.class("ClassDiagram", 0, 0)
             .attribute("+id: int")
             .attribute("+name: String");
 
-            diagram.class("Class", 200, 0)
+            var c = diagram.class("Class", 200, 0)
               .attribute("+name: String");
 
-            diagram.class("Attribute", 200, 200)
+            var a = diagram.class("Attribute", 200, 200)
               .attribute("+attributeString: String");
+
+            diagram.associationFrom(cd, '1').to(c, '0..*');
+            diagram.associationFrom(c, '1').to(a, '0..*');
 
             diagram.draw(paper);
         };
