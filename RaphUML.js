@@ -24,7 +24,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-var RaphUML = function() {
+
+var RaphUML = function () {
 
 
     /* straightLineRouter
@@ -38,6 +39,13 @@ var RaphUML = function() {
             var a = classDiagram.associations[i];
             paper.path('M' + a.fromClass.cx() + ' ' + a.fromClass.cy() +
                     'L' + a.toClass.cx() + ' ' + a.toClass.cy());
+
+            var mx = (a.fromClass.cx() + a.toClass.cx()) / 2;
+            var my = (a.fromClass.cy() + a.toClass.cy()) / 2;
+
+            if (a.name) {
+                paper.text(0, 0, a.name).anchor(8, mx, my);
+            }
         }
     }
 
@@ -96,9 +104,15 @@ var RaphUML = function() {
     var Association = function() {
     }
 
+    Association.prototype.name = function (name) {
+        this.name = name;
+        return this;
+    }
+
     Association.prototype.to = function (class, cardinality) {
         this.toClass = class;
         this.toCardinality = cardinality;
+        return this;
     }
 
 
@@ -228,6 +242,73 @@ var RaphUML = function() {
 
 }();
 
+
+/* anchor (Raphael element plug-in)
+ *
+ * Positions the object relative to a given anchor point. There are nine
+ * anchor points, as follows:
+ *
+ *   1   2   3
+ *   4   5   6
+ *   7   8   9
+ *
+ * For example, for anchor point 1, the top-left corner of the element 
+ * is positioned at the given anchor point coordinates.
+ *
+ * anchor - which anchor point to use
+ * x - x-coordinate of the anchor point
+ * y - y-coordinate of the anchor point
+ * xPad - amount of x padding, optional, defaults to 3
+ * yPad - amount of y padding, optional, defaults to the same value as the x padding
+ */
+Raphael.el.anchor = function (anchor, x, y, xPad, yPad) {
+
+    xPad = xPad || 3;
+    yPad = yPad || xPad;
+
+    var box = this.getBBox();
+
+    switch (anchor) {
+        case 1:
+            var cx = x + xPad + box.width / 2;
+            var cy = y + yPad + box.height / 2;
+            break;
+        case 2:
+            var cx = x;
+            var cy = y + yPad + box.height / 2;
+            break;
+        case 3:
+            var cx = x - xPad - box.width / 2;
+            var cy = y + yPad + box.height / 2;
+            break;
+        case 4:
+            var cx = x + xPad + box.width / 2;
+            var cy = y;
+            break;
+        case 5:
+            var cx = x;
+            var cy = y;
+            break;
+        case 6:
+            var cx = x - xPad - box.width / 2;
+            var cy = y;
+            break;
+        case 7:
+            var cx = x + xPad + box.width / 2;
+            var cy = y - yPad - box.height / 2;
+            break;
+        case 8:
+            var cx = x;
+            var cy = y - yPad - box.height / 2;
+            break;
+        case 9:
+            var cx = x - xPad - box.width / 2;
+            var cy = y - yPad - box.height / 2;
+            break;
+    }
+
+    this.attr({ x: cx, y: cy });
+};
 
 
 

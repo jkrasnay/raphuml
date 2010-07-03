@@ -4,8 +4,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Raphuml Test 1</title>
-    <script src="RaphUML.js" type="text/javascript" charset="utf-8"></script>
     <script src="raphael-min-1.4.3.js" type="text/javascript" charset="utf-8"></script>
+    <script src="RaphUML.js" type="text/javascript" charset="utf-8"></script>
 
     <script type="text/javascript" charset="utf-8">
         window.onload = function () {
@@ -24,8 +24,8 @@
             var a = diagram.class("Attribute", 200, 200)
               .attribute("+attributeString: String");
 
-            diagram.associationFrom(cd, '1').to(c, '0..*');
-            diagram.associationFrom(c, '1').to(a, '0..*');
+            diagram.associationFrom(cd, '1').name('classes').to(c, '0..*');
+            diagram.associationFrom(c, '1').name('attributes').to(a, '0..*');
 
             diagram.draw(paper);
         };
