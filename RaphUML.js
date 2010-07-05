@@ -68,7 +68,7 @@ var RaphUML = function () {
                 anchor = 7;
             } else if (thisInt.side == 'right') {
                 anchor = 1;
-            } else if (thisInt.size == 'bottom') {
+            } else if (thisInt.side == 'bottom') {
                 anchor = 1;
             } else {
                 anchor = 3;
@@ -87,7 +87,7 @@ var RaphUML = function () {
 
             if (int1 && int2) {
 
-                paper.path('M' + int1.point[0] + ' ' + int1.point[1]
+                paper.path('M' + int1.point[0] + ' ' + int1.point[1] +
                         'L' + int2.point[0] + ' ' + int2.point[1]);
 
 
