@@ -35,16 +35,71 @@ var RaphUML = function () {
      * assocations on a diagram.
      */
     var straightLineRouter = function(paper, classDiagram) {
+
+        var boxIntersection = function (thisClass, otherClass) {
+
+            var seg = [ thisClass.cx(), thisClass.cy(), otherClass.cx(), otherClass.cy() ];
+
+            var c = thisClass;
+            var sides = {
+                top: [ c.x, c.y, c.x + c.width, c.y ],
+                right: [ c.x + c.width, c.y, c.x + c.width, c.y + c.height],
+                bottom: [ c.x, c.y + c.height, c.x + c.width, c.y + c.height],
+                left: [ c.x, c.y, c.x, c.y + c.height ]
+            };
+
+            for (var side in sides) {
+                var intersect = seg_intersect(seg, sides[side]);
+                if (intersect) {
+                    console.log('found intersection at ' + side);
+                    return { side: side, point: intersect }
+                }
+            }
+
+            console.error('Found no side');
+
+            return null;
+        }
+
+
+        var drawMulti = function (paper, multi, thisInt, otherInt) {
+            var anchor;
+            if (thisInt.side == 'top') {
+                anchor = 7;
+            } else if (thisInt.side == 'right') {
+                anchor = 1;
+            } else if (thisInt.size == 'bottom') {
+                anchor = 1;
+            } else {
+                anchor = 3;
+            }
+
+            paper.text(0, 0, multi).anchor(anchor, thisInt.point[0], thisInt.point[1]);
+
+        }
+
         for (var i = 0; i < classDiagram.associations.length; i++) {
+
             var a = classDiagram.associations[i];
-            paper.path('M' + a.fromClass.cx() + ' ' + a.fromClass.cy() +
-                    'L' + a.toClass.cx() + ' ' + a.toClass.cy());
 
-            var mx = (a.fromClass.cx() + a.toClass.cx()) / 2;
-            var my = (a.fromClass.cy() + a.toClass.cy()) / 2;
+            var int1 = boxIntersection(a.fromClass, a.toClass);
+            var int2 = boxIntersection(a.toClass, a.fromClass);
 
-            if (a.name) {
-                paper.text(0, 0, a.name).anchor(8, mx, my);
+            if (int1 && int2) {
+
+                paper.path('M' + int1.point[0] + ' ' + int1.point[1]
+                        'L' + int2.point[0] + ' ' + int2.point[1]);
+
+
+                drawMulti(paper, a.fromCardinality, int1, int2);
+                drawMulti(paper, a.toCardinality, int2, int1);
+
+                var mx = (a.fromClass.cx() + a.toClass.cx()) / 2;
+                var my = (a.fromClass.cy() + a.toClass.cy()) / 2;
+
+                if (a.name) {
+                    paper.text(0, 0, a.name).anchor(8, mx, my);
+                }
             }
         }
     }
@@ -189,50 +244,72 @@ var RaphUML = function () {
 
 
 
-    var intersect = function(seg1, seg2) {
-      /* From http://www.topcoder.com/tc?module=Static&d1=tutorials&d2=geometry2 */
-      /* Each arg represents a line segment with the attributes x1, y1, x2, y2 */
+    /* seg_intersect
+     *
+     * Find the intersection between two line segments.
+     *
+     * Each arg is a line segment, represented as an array of four numbers:
+     * [ x1, y1, x2, y2 ].
+     *
+     * If the lines intersect, returns a two-element array representing the
+     * intersection point. If not, returns null.
+     *
+     * Algorithm from http://www.topcoder.com/tc?module=Static&d1=tutorials&d2=geometry2
+     *
+     */
+    var seg_intersect = function(seg1, seg2) {
 
       console.log("Testing " + seg1 + " to " + seg2);
 
-      var a1 = seg1.y2 - seg1.y1;
-      var b1 = seg1.x1 - seg1.x2;
-      var c1 = a1 * seg1.x1 + b1 * seg1.y1;
+      var a1 = seg1[3] - seg1[1];
+      var b1 = seg1[0] - seg1[2];
+      var c1 = a1 * seg1[0] + b1 * seg1[1];
 
-      var a2 = seg2.y2 - seg2.y1;
-      var b2 = seg2.x1 - seg2.x2;
-      var c2 = a2 * seg2.x1 + b2 * seg2.y1;
+      var a2 = seg2[3] - seg2[1];
+      var b2 = seg2[0] - seg2[2];
+      var c2 = a2 * seg2[0] + b2 * seg2[1];
 
       var det = a1 * b2 - a2 * b1;
 
       console.log("det is " + det);
       if (det == 0) {
         console.log("Lines are parallel");
+        return null;
       } else {
         var x = (b2 * c1 - b1 * c2) / det;
         var y = (a1 * c2 - a2 * c1) / det;
-        var point = { x: x, y: y };
-        console.log("Lines meet at " + point.x + ", " + point.y);
+        var point = [ x, y ];
+        console.log("Lines meet at " + point[0] + ", " + point[1]);
         if (seg_contains(seg1, point) && seg_contains(seg2, point)) {
             console.log("...and it's inside the segment");
+            return point;
         } else {
             console.log("...but it's outside the segment");
+            return null;
         }
 
       }
 
     };
 
+    /* seg_contains
+     *
+     * Returns true if the given segment contains the given point.
+     *
+     * seg - Line segment represented by an array of four numbers: [ x1, y1, x2, y2 ]
+     * point - Point to be tested: [ x, y ]
+     *
+     */
     var seg_contains = function(seg, point) {
-      return Math.min(seg.x1, seg.x2) <= point.x
-      && point.x <= Math.max(seg.x1, seg.x2)
-      && Math.min(seg.y1, seg.y2) <= point.y
-      && point.y <= Math.max(seg.y1, seg.y2);
+      return Math.min(seg[0], seg[2]) <= point[0]
+      && point[0] <= Math.max(seg[0], seg[2])
+      && Math.min(seg[1], seg[3]) <= point[1]
+      && point[1] <= Math.max(seg[1], seg[3]);
     }
 
-    intersect({ x1: 0, y1: 0, x2: 4, y2: 4 }, { x1: 2, y1: 1, x2: 3, y2: 2 });
-    intersect({ x1: 0, y1: 0, x2: 4, y2: 4 }, { x1: 2, y1: 1, x2: 1, y2: 2 });
-    intersect({ x1: 0, y1: 0, x2: 4, y2: 4 }, { x1: 2, y1: 1, x2: 3, y2: 2.1 });
+    seg_intersect([ 0, 0, 4, 4 ], [ 2, 1, 3, 2 ]);
+    seg_intersect([ 0, 0, 4, 4 ], [ 2, 1, 1, 2 ]);
+    seg_intersect([ 0, 0, 4, 4 ], [ 2, 1, 3, 2.1 ]);
 
     return {
         classDiagram: function () {
@@ -252,7 +329,7 @@ var RaphUML = function () {
  *   4   5   6
  *   7   8   9
  *
- * For example, for anchor point 1, the top-left corner of the element 
+ * For example, for anchor point 1, the top-left corner of the element
  * is positioned at the given anchor point coordinates.
  *
  * anchor - which anchor point to use
