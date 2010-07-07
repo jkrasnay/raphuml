@@ -1,0 +1,28 @@
+<project name="raphuml" default="build">
+
+  <property name="jscc" value="/opt/jscc"/>
+  <property name="rhino" value="/usr/bin/rhino"/>
+
+  <target name="build">
+
+    <mkdir dir="target"/>
+
+    <exec executable="${rhino}">
+      <arg value="${jscc}/jscc.js"/>
+      <arg value="-o"/>
+      <arg value="target/ClassDiagramParser.js"/>
+      <arg value="-p"/>
+      <arg value="ClassDiagram_"/>
+      <arg value="-t"/>
+      <arg value="${jscc}/driver_web.js_"/>
+      <arg value="src/ClassDiagramParser.par"/>
+    </exec>
+
+  </target>
+
+  <target name="clean">
+    <delete dir="target"/>
+  </target>
+
+</project>
+

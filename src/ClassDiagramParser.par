@@ -1,0 +1,78 @@
+/~ Class Diagram Grammar ~/
+
+!   '[ \t\r]'
+    ;
+
+ 
+    'assoc'
+    'class'
+    'extends'
+    'has'
+    'implements'
+    'nav-to'
+    'owns'
+    'to'
+    'uses'
+    '\('
+    '\)'
+    '\n'
+    '--'
+    '\.\.'
+    '[0-9]+'                        DIGITS
+    '[0-9]+(\.\.[0-9]+|\*)?'        MULTI
+    '[A-Za-z_][A-Za-z0-9_]*'        IDENT
+    '[-\+#][^\n]*'                  MEMBER
+    ;
+
+##
+
+stmt-list           : stmt-list stmt
+                    |
+                    ;
+
+stmt                : class-def
+                    | assoc-def
+                    | '\n'
+                    ;
+
+class-def           : 'class' IDENT '\n' attrs-ops
+                    ;
+
+attrs-ops           : '--' '\n' attr-list
+                    | '--' '\n' attr-list '--' '\n' op-list
+                    |
+                    ;
+
+attr-list           : attr-list attr
+                    |
+                    ;
+
+attr                : MEMBER '\n'
+                    ;
+
+op-list             : op-list op
+                    |
+                    ;
+
+op                  : MEMBER '\n'
+                    ;
+
+assoc-def           : 'assoc' end-point assoc-type end-point '\n'
+                    ;
+
+end-point           : IDENT '(' MULTI ')'
+                    | IDENT
+                    ;
+assoc-type          : 'extends'
+                    | 'has'
+                    | 'implements'
+                    | 'nav-to'
+                    | 'owns'
+                    | 'to'
+                    | 'uses'
+                    ;
+
+ 
+
+ 
+
