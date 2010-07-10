@@ -3,7 +3,7 @@
 !   '[ \t\r]'
     ;
 
- 
+
     'assoc'
     'class'
     'extends'
@@ -35,7 +35,13 @@ stmt                : class-def
                     | '\n'
                     ;
 
-class-def           : 'class' IDENT '\n' attrs-ops
+class-def           : 'class' IDENT '\n' attrs-ops              [*
+                                                                   currentClass = parsedClassDiagram.class(%2, 0, 0);
+                                                                   for (var i = 0; i < parsedAttributes.length; i++) {
+                                                                       currentClass.attribute(parsedAttributes[i]);
+                                                                   }
+                                                                   parsedAttributes = [];
+                                                                *]
                     ;
 
 attrs-ops           : '--' '\n' attr-list
@@ -47,7 +53,7 @@ attr-list           : attr-list attr
                     |
                     ;
 
-attr                : MEMBER '\n'
+attr                : MEMBER '\n'                               [* parsedAttributes.push(%1); *]
                     ;
 
 op-list             : op-list op
@@ -72,7 +78,7 @@ assoc-type          : 'extends'
                     | 'uses'
                     ;
 
- 
 
- 
+
+
 

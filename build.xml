@@ -18,10 +18,26 @@
       <arg value="src/ClassDiagramParser.par"/>
     </exec>
 
+    <loadfile property="CLASS_DIAGRAM"        srcFile="src/ClassDiagram.js"/>
+    <loadfile property="CLASS_DIAGRAM_PARSER" srcFile="target/ClassDiagramParser.js"/>
+
+    <copy file="src/RaphUML.js_" toFile="target/RaphUML.js" overwrite="true">
+      <filterset>
+        <filter token="CLASS_DIAGRAM"        value="${CLASS_DIAGRAM}"/>
+        <filter token="CLASS_DIAGRAM_PARSER" value="${CLASS_DIAGRAM_PARSER}"/>
+      </filterset>
+    </copy>
+
   </target>
 
   <target name="clean">
     <delete dir="target"/>
+  </target>
+
+  <target name="test">
+    <exec executable="${rhino}" dir="test">
+      <arg value="ClassDiagramParserTest.js"/>
+    </exec>
   </target>
 
 </project>

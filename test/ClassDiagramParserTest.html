@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <link rel="stylesheet" href="../lib/qunit.css" type="text/css"/>
+    <style>
+      pre { display:none; }
+    </style>
+    <script src="../lib/jquery-1.4.2.min.js"></script>
+    <script src="../lib/raphael-min-1.4.3.js"></script>
+    <script src="../target/RaphUML.js"></script>
+    <script src="../lib/qunit.js"></script>
+    <script src="cdp-test.js"></script>
+  </head>
+  <body>
+    <h1 id="qunit-header">ClassDiagramParser Test</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests">
+    </ol>
+
+    <pre id="empty"></pre>
+
+    <pre id="newline">
+</pre>
+
+    <pre id="error1">foo</pre>
+
+    <pre id="simpleClass">
+class Foo
+    </pre>
+
+    <pre id="twoClasses">
+class Foo
+class Bar
+    </pre>
+
+    <pre id="classWithAttributes">
+class Foo
+--
++id: int
++name: String
+    </pre>
+
+  </body>
+</html>
