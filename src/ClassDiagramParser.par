@@ -1,5 +1,14 @@
 /~ Class Diagram Grammar ~/
 
+[*
+
+    var parsedAttributes = [];
+    var parsedConstant;
+    var parsedMulti;
+    var parsedProperties = { };
+
+*]
+
 !   '[ \t\r]'
     ;
 
@@ -15,11 +24,13 @@
     'uses'
     '\('
     '\)'
+    ','
     '\n'
     '--'
+    '='
     '\.\.'
+    '\*'
     '[0-9]+'                        DIGITS
-    '[0-9]+(\.\.[0-9]+|\*)?'        MULTI
     '[A-Za-z_][A-Za-z0-9_]*'        IDENT
     '[-\+#][^\n]*'                  MEMBER
     ;
@@ -35,13 +46,35 @@ stmt                : class-def
                     | '\n'
                     ;
 
-class-def           : 'class' IDENT '\n' attrs-ops              [*
-                                                                   currentClass = parsedClassDiagram.class(%2, 0, 0);
-                                                                   for (var i = 0; i < parsedAttributes.length; i++) {
-                                                                       currentClass.attribute(parsedAttributes[i]);
-                                                                   }
-                                                                   parsedAttributes = [];
-                                                                *]
+class-def           : 'class' IDENT '\n' properties attrs-ops
+
+[*
+    var currentClass = parsedClassDiagram.class(%2, 0, 0);
+
+    for (var i = 0; i < parsedAttributes.length; i++) {
+        currentClass.attribute(parsedAttributes[i]);
+    }
+
+    for (var key in parsedProperties) {
+        currentClass[key] = parsedProperties[key];
+    }
+
+    parsedAttributes = [];
+*]
+                    ;
+
+properties          : '(' property-list ')' '\n'
+                    |
+                    ;
+
+property-list       : property-list ',' property
+                    | property
+                    ;
+
+property            : IDENT '=' constant                        [* parsedProperties[%1] = parsedConstant; *]
+                    ;
+
+constant            : DIGITS                                    [* parsedConstant = Number(%1); *]
                     ;
 
 attrs-ops           : '--' '\n' attr-list
@@ -66,9 +99,15 @@ op                  : MEMBER '\n'
 assoc-def           : 'assoc' end-point assoc-type end-point '\n'
                     ;
 
-end-point           : IDENT '(' MULTI ')'
-                    | IDENT
+end-point           : IDENT multi
                     ;
+
+multi               : '(' DIGITS ')'                            [* parsedMulti = %2; *]
+                    | '(' DIGITS '..' DIGITS ')'                [* parsedMulti = %2 + %3 + %4; *]
+                    | '(' DIGITS '..' '*' ')'                   [* parsedMulti = %2 + %3 + %4; *]
+                    |                                           [* parsedMulti = null; *]
+                    ;
+
 assoc-type          : 'extends'
                     | 'has'
                     | 'implements'

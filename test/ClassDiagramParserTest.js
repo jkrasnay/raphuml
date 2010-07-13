@@ -42,3 +42,12 @@ test('Class with attributes', function () {
     equals(c.attributes[1].attributeString, '+name: String');
 });
 
+test('Class with properties', function () {
+    var diagram = RaphUML.parseClassDiagram($('#classWithProperties').text());
+    equals(diagram.classes.length, 1);
+    var c = diagram.classes[0];
+    equals(c.name, 'Foo');
+    equals(c.x, 1);
+    equals(c.y, 2);
+});
+
