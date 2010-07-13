@@ -114,3 +114,43 @@ Raphael.el.anchor = function (anchor, x, y, xPad, yPad) {
 
 
 
+if (jQuery) {
+    (function ($) {
+
+        /* Replaces an element containing a textual class diagram
+         * with a graphical one.
+         */
+        jQuery.fn.classDiagram = function () {
+
+            return this.each(function () {
+
+                var script = $(this);
+                var offset = script.offset();
+
+                var diagram = $('<div></div>')
+                    .css('position', 'absolute')
+                    .css('left', offset.left)
+                    .css('top', offset.top)
+                    .css('width', script.innerWidth())
+                    .css('height', script.innerHeight());
+
+                script.after(diagram);
+
+                var paper = Raphael(diagram.get(0), script.innerWidth(), script.innerHeight());
+
+                try {
+                    var diagram = RaphUML.parseClassDiagram(script.text());
+                    diagram.draw(paper);
+                    script.css('visibility', 'hidden');
+                } catch (e) {
+                    diagram.text('Error at offset ' + e.offset + ': ' + e.message);
+                }
+
+
+            });
+
+        }
+
+    })(jQuery);
+}
+
