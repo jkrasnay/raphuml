@@ -65,8 +65,8 @@ var RaphUML = function () {
  */
 Raphael.el.anchor = function (anchor, x, y, xPad, yPad) {
 
-    xPad = xPad || 3;
-    yPad = yPad || xPad;
+    if (xPad == null) { xPad = 3; }
+    if (yPad == null) { yPad = xPad; }
 
     var box = this.getBBox();
 
@@ -143,7 +143,11 @@ if (jQuery) {
                     diagram.draw(paper);
                     script.css('visibility', 'hidden');
                 } catch (e) {
-                    diagram.text('Error at offset ' + e.offset + ': ' + e.message);
+                    if (e.offset) {
+                        diagram.text('Error at offset ' + e.offset + ': ' + e.message);
+                    } else {
+                        diagram.text(e);
+                    }
                 }
 
 

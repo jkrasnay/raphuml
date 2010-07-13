@@ -117,8 +117,8 @@ var ClassDiagram = function() {
     this.classes = [];
 
     this.bodyFontSize = 12;
-    this.bodyHPad = 2;
-    this.bodyVPad = 2;
+    this.bodyHPad = 4;
+    this.bodyVPad = 4;
     this.defaultWidth = 120;
     this.headingFontSize = 12;
     this.headingVPad = 4;
@@ -222,6 +222,7 @@ var Class = function(classDiagram, name, x, y) {
     this.height = classDiagram.headingFontSize + 2 * classDiagram.headingVPad;
 
     this.attributes = [];
+    this.operations = [];
 }
 
 Class.prototype.attribute = function (attributeString) {
@@ -256,26 +257,55 @@ Class.prototype.draw = function(paper) {
         y: this.y + this.classDiagram.headingVPad + this.classDiagram.headingFontSize/2
     });
 
-    if (this.attributes.length > 0) {
-        var y = this.y + this.classDiagram.headingFontSize + 2 * this.classDiagram.headingVPad;
-        paper.path('M' + this.x + ' ' + y + 'L' + (this.x + this.width) + ' ' + y);
-    }
-
     var x = this.x + this.classDiagram.bodyHPad;
-    y += this.classDiagram.bodyVPad + this.classDiagram.bodyFontSize / 2;
-    for (var i = 0; i < this.attributes.length; i++) {
-        console.log("Drawing " + this.attributes[i].attributeString);
-        var text = paper.text(x, y, this.attributes[i].attributeString);
-        text.attr('x', x + text.getBBox().width / 2);
-        y += this.classDiagram.bodyFontSize + this.classDiagram.bodyVPad;
+    var y = this.y + this.classDiagram.headingFontSize + 2 * this.classDiagram.headingVPad;
+
+    if (this.attributes.length > 0) {
+
+        paper.path('M' + this.x + ' ' + y + 'L' + (this.x + this.width) + ' ' + y);
+
+        y += this.classDiagram.bodyVPad;
+        for (var i = 0; i < this.attributes.length; i++) {
+            var text = paper.text(0, 0, this.attributes[i].attributeString).anchor(1, x, y, 0, 0);
+            y += this.classDiagram.bodyFontSize + this.classDiagram.bodyVPad;
+        }
     }
 
+    if (this.operations.length > 0) {
+
+        paper.path('M' + this.x + ' ' + y + 'L' + (this.x + this.width) + ' ' + y);
+
+        y += this.classDiagram.bodyVPad;
+        for (var i = 0; i < this.operations.length; i++) {
+            var text = paper.text(0, 0, this.operations[i].operationString).anchor(1, x, y, 0, 0);
+            y += this.classDiagram.bodyFontSize + this.classDiagram.bodyVPad;
+        }
+    }
+
+}
+
+Class.prototype.operation = function (operationString) {
+
+    this.operations.push(new Operation(this, operationString));
+
+    if (this.operations.length == 1) {
+        this.height += this.classDiagram.bodyVPad;
+    }
+
+    this.height += this.classDiagram.bodyFontSize + this.classDiagram.bodyVPad;
+
+    return this;
 }
 
 
 var Attribute = function(class, attributeString) {
     this.class = class;
     this.attributeString = attributeString;
+}
+
+var Operation = function(class, operationString) {
+    this.class = class;
+    this.operationString = operationString;
 }
 
 

@@ -7,6 +7,7 @@
     var parsedConstant;
     var parsedEndPoints = [];
     var parsedMulti;
+    var parsedOperations = [];
     var parsedProperties = { };
 
 *]
@@ -57,11 +58,16 @@ class-def           : 'class' IDENT '\n' properties attrs-ops
         currentClass.attribute(parsedAttributes[i]);
     }
 
+    for (var i = 0; i < parsedOperations.length; i++) {
+        currentClass.operation(parsedOperations[i]);
+    }
+
     for (var key in parsedProperties) {
         currentClass[key] = parsedProperties[key];
     }
 
     parsedAttributes = [];
+    parsedOperations = [];
     parsedProperties = [];
 *]
                     ;
@@ -96,7 +102,7 @@ op-list             : op-list op
                     |
                     ;
 
-op                  : MEMBER '\n'
+op                  : MEMBER '\n'                               [* parsedOperations.push(%1); *]
                     ;
 
 assoc-def           : 'assoc' end-point assoc-type end-point '\n'
