@@ -3,7 +3,9 @@
 [*
 
     var parsedAttributes = [];
+    var parsedClassDiagram;
     var parsedConstant;
+    var parsedEndPoints = [];
     var parsedMulti;
     var parsedProperties = { };
 
@@ -97,9 +99,18 @@ op                  : MEMBER '\n'
                     ;
 
 assoc-def           : 'assoc' end-point assoc-type end-point '\n'
+
+[*
+    var ep1 = parsedEndPoints.shift();
+    var fromClass = parsedClassDiagram.findClass(ep1[0]);
+    var ep2 = parsedEndPoints.shift();
+    var toClass = parsedClassDiagram.findClass(ep2[0]);
+    parsedClassDiagram.associationFrom(fromClass, ep1[1]).to(toClass, ep2[1]);
+*]
+
                     ;
 
-end-point           : IDENT multi
+end-point           : IDENT multi                               [* parsedEndPoints.push([ %1, parsedMulti ]); *]
                     ;
 
 multi               : '(' DIGITS ')'                            [* parsedMulti = %2; *]

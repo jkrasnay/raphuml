@@ -146,6 +146,14 @@ ClassDiagram.prototype.draw = function(paper) {
     }
 }
 
+ClassDiagram.prototype.findClass = function (name) {
+    for (var i = 0; i < this.classes.length; i++) {
+        if (this.classes[i].name == name) {
+            return this.classes[i];
+        }
+    }
+    throw 'Class not found: ' + name;
+}
 
 
 
@@ -184,6 +192,7 @@ ClassDiagram.parse = function (s) {
  * associations on the diagram with a particular algorithm.
  */
 var Association = function() {
+    this.name = ''; // else we see the function from the prototype
 }
 
 Association.prototype.name = function (name) {
