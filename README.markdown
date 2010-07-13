@@ -40,18 +40,14 @@ the Javascript API. Classes must be explicitly positioned on the
 diagram. I hope to implement a layout algorithm that will position the
 classes nicely by default.
 
-The class diagram parser is mostly working, but I'll need to add the
-facility for arbitrary properties to be specified, so that we can
-position the classes until I get the layout algorithm specified.
-
 Next steps:
 
-- implement class properties in the parser
-- implement a function and JQuery plug-in to automatically convert <pre>
-  elements containing the DSL to a class diagram
+- parse associations
 - parse and draw class operations
-- implement an automated layout algorithm
+- build a release
+- create some demo pages
 - work on sequence diagrams
+- implement an automated layout algorithm
 
 # Build and Test
 
