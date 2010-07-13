@@ -1,5 +1,7 @@
 <project name="raphuml" default="build">
 
+  <property name="version" value="0.1"/>
+
   <property name="jscc" value="/opt/jscc"/>
   <property name="rhino" value="/usr/bin/rhino"/>
 
@@ -32,6 +34,26 @@
 
   <target name="clean">
     <delete dir="target"/>
+  </target>
+
+  <target name="release" depends="build">
+
+    <fail message="You shouldn't release a version with SNAPSHOT in the name.">
+      <condition>
+        <contains string="${version}" substring="SNAPSHOT"/>
+      </condition>
+    </fail>
+
+    <copy file="target/RaphUML.js" toFile="dist/RaphUML-${version}.js"/>
+
+    <echo>
+
+Created release/RaphUML-${version}.js.
+
+Don't forget to tag this release in Git!
+
+    </echo>
+
   </target>
 
   <target name="test">

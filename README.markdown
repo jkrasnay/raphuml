@@ -1,3 +1,5 @@
+# RaphUML
+
 RaphUML is a JavaScript library for drawing UML diagrams in the browser
 using the Raphael graphics library. The idea is to be able to specify
 UML class and sequence diagrams in HTML using simple DSLs and have them
@@ -33,7 +35,7 @@ something like this:
       foo -> bar
     </pre>
 
-# Status/TODO
+## Status/TODO
 
 RaphUML can currently render class diagrams built programmatically by
 the Javascript API. Classes must be explicitly positioned on the
@@ -42,14 +44,11 @@ classes nicely by default.
 
 Next steps:
 
-- parse associations
-- parse and draw class operations
-- build a release
 - create some demo pages
 - work on sequence diagrams
 - implement an automated layout algorithm
 
-# Build and Test
+## Build and Test
 
 Building RaphUML involves generating the parser from the parser
 definition (`*.par`) files, then assembling RaphUML from the generated
