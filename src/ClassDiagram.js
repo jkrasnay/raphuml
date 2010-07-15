@@ -84,9 +84,22 @@ var straightLineRouter = function(paper, classDiagram) {
 
         if (int1 && int2) {
 
-            paper.path('M' + int1.point[0] + ' ' + int1.point[1] +
+            var path = paper.path('M' + int1.point[0] + ' ' + int1.point[1] +
                     'L' + int2.point[0] + ' ' + int2.point[1]);
 
+            if (a.type == 'implements' || a.type == 'uses') {
+                path.attr({ 'stroke-dasharray': '-' });
+            }
+
+            if (a.type == 'implements' || a.type == 'extends') {
+                paper.arrow(int2.point[0], int2.point[1], int1.point[0], int1.point[1], 20, 20, true).attr({ fill: 'white' });
+            } else if (a.type == 'nav-to' || a.type == 'uses') {
+                paper.arrow(int2.point[0], int2.point[1], int1.point[0], int1.point[1], 16, 12);
+            } else if (a.type == 'has') {
+                paper.diamond(int1.point[0], int1.point[1], int2.point[0], int2.point[1], 24, 10).attr({ fill: 'white' });
+            } else if (a.type == 'owns') {
+                paper.diamond(int1.point[0], int1.point[1], int2.point[0], int2.point[1], 24, 10).attr({ fill: 'black' });
+            }
 
             drawMulti(paper, a.fromCardinality, int1, int2);
             drawMulti(paper, a.toCardinality, int2, int1);
@@ -144,6 +157,7 @@ ClassDiagram.prototype.draw = function(paper) {
     for (var i = 0; i < this.classes.length; i++) {
         this.classes[i].draw(paper);
     }
+
 }
 
 ClassDiagram.prototype.findClass = function (name) {
@@ -200,9 +214,13 @@ Association.prototype.name = function (name) {
     return this;
 }
 
-Association.prototype.to = function (class, cardinality) {
+/*
+ * type is one of 'extends', 'has', 'implements', 'owns', 'nav-to', 'to', 'uses'
+ */
+Association.prototype.to = function (class, cardinality, type) {
     this.toClass = class;
     this.toCardinality = cardinality;
+    this.type = type;
     return this;
 }
 

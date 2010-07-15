@@ -113,6 +113,70 @@ Raphael.el.anchor = function (anchor, x, y, xPad, yPad) {
 };
 
 
+/* arrow (Raphael canvas plug-in)
+ *
+ * Creates an arrow object.
+ *
+ * x, y - Tip of the arrow.
+ * x2, y2 - Other end of the line segment on which the arrow is drawn.
+ *          This establishes the angle of the arrow.
+ * length - Length of the arrow.
+ * width - Width of the arrow.
+ * closed - If true, the arrow is rendered as a closed path.
+ */
+Raphael.fn.arrow = function (x, y, x2, y2, length, width, closed) {
+
+    var a = length;
+    var b = width/2;
+
+    var pathString = 'M' + x + ' ' + y + 'm' + a + ' ' + b + 'L' + x + ' ' + y + 'l' + a + ' ' + (-b);
+
+    if (closed) {
+        pathString += ' z';
+    }
+
+    var path = this.path(pathString);
+
+    var angle = Math.atan2(y2 - y, x2 - x) * 180 / Math.PI;
+
+    if (angle < 0) {
+        angle += 360;
+    }
+
+    path.rotate(angle, x, y);
+
+    return path;
+}
+
+/* diamond (Raphael canvas plug-in)
+ *
+ * Creates a diamond object positioned at the end of a line segment.
+ *
+ * x, y - Tip of the line segment where the arrow is to be drawn.
+ * x2, y2 - Other end of the line segment on which the diamond is drawn.
+ * length - Length of the diamond.
+ * width - Width of the diamond.
+ */
+Raphael.fn.diamond = function (x, y, x2, y2, length, width) {
+
+    var a = length/2;
+    var b = width/2;
+
+    var pathString = 'M' + x + ' ' + y + 'l' + a + ' ' + b + 'l' + a + ' ' + (-b) + 'l' + (-a) + ' ' + (-b) + 'z';
+
+    var path = this.path(pathString);
+
+    var angle = Math.atan2(y2 - y, x2 - x) * 180 / Math.PI;
+
+    if (angle < 0) {
+        angle += 360;
+    }
+
+    path.rotate(angle, x, y);
+
+    return path;
+}
+
 
 if (jQuery) {
     (function ($) {
