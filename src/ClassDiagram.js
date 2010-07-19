@@ -48,12 +48,9 @@ var straightLineRouter = function(paper, classDiagram) {
         for (var side in sides) {
             var intersect = seg_intersect(seg, sides[side]);
             if (intersect) {
-                console.log('found intersection at ' + side);
                 return { side: side, point: intersect }
             }
         }
-
-        console.error('Found no side');
 
         return null;
     }
@@ -343,8 +340,6 @@ var Operation = function(class, operationString) {
  */
 var seg_intersect = function(seg1, seg2) {
 
-  console.log("Testing " + seg1 + " to " + seg2);
-
   var a1 = seg1[3] - seg1[1];
   var b1 = seg1[0] - seg1[2];
   var c1 = a1 * seg1[0] + b1 * seg1[1];
@@ -355,20 +350,15 @@ var seg_intersect = function(seg1, seg2) {
 
   var det = a1 * b2 - a2 * b1;
 
-  console.log("det is " + det);
   if (det == 0) {
-    console.log("Lines are parallel");
     return null;
   } else {
     var x = (b2 * c1 - b1 * c2) / det;
     var y = (a1 * c2 - a2 * c1) / det;
     var point = [ x, y ];
-    console.log("Lines meet at " + point[0] + ", " + point[1]);
     if (seg_contains(seg1, point) && seg_contains(seg2, point)) {
-        console.log("...and it's inside the segment");
         return point;
     } else {
-        console.log("...but it's outside the segment");
         return null;
     }
 
