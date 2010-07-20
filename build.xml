@@ -9,6 +9,8 @@
 
     <mkdir dir="target"/>
 
+    <!-- Generate the parsers -->
+
     <exec executable="${rhino}">
       <arg value="${jscc}/jscc.js"/>
       <arg value="-o"/>
@@ -20,14 +22,35 @@
       <arg value="src/ClassDiagramParser.par"/>
     </exec>
 
+    <!-- Build target/raphuml-x.y.js -->
+
     <loadfile property="CLASS_DIAGRAM"        srcFile="src/ClassDiagram.js"/>
     <loadfile property="CLASS_DIAGRAM_PARSER" srcFile="target/ClassDiagramParser.js"/>
 
-    <copy file="src/RaphUML.js_" toFile="target/RaphUML.js" overwrite="true">
+    <copy file="src/raphuml.js" toFile="target/raphuml-${version}.js" overwrite="true">
       <filterset>
+        <filter token="VERSION"              value="${version}"/>
         <filter token="CLASS_DIAGRAM"        value="${CLASS_DIAGRAM}"/>
         <filter token="CLASS_DIAGRAM_PARSER" value="${CLASS_DIAGRAM_PARSER}"/>
       </filterset>
+    </copy>
+
+    <!-- Assemble the full distribution package -->
+
+    <property name="fulldir" value="target/raphuml-${version}"/>
+
+    <mkdir dir="${fulldir}"/>
+    <copy todir="${fulldir}">
+      <fileset dir="lib" includes="*" excludes="qunit.*"/>
+      <fileset dir="target" includes="raphuml-${version}.js"/>
+    </copy>
+
+    <mkdir dir="${fulldir}/studio"/>
+    <copy todir="${fulldir}/studio">
+      <filterset>
+        <filter token="VERSION" value="${version}"/>
+      </filterset>
+      <fileset dir="studio" includes="*"/>
     </copy>
 
   </target>
@@ -44,13 +67,15 @@
       </condition>
     </fail>
 
-    <copy file="target/RaphUML.js" toFile="dist/RaphUML-${version}.js"/>
+    <copy file="target/raphuml-${version}.js" toDir="dist"/>
+
+    <zip destfile="dist/raphuml-${version}-full.zip" basedir="target" includes="raphuml-${version}/**/*"/>
 
     <echo>
 
-Created release/RaphUML-${version}.js.
+Created release ${version}.
 
-Don't forget to tag this release in Git!
+Don't forget to check in the distribution files and tag this release in Git!
 
     </echo>
 

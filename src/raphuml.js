@@ -1,5 +1,5 @@
 /*
- * RaphUML.js
+ * RaphUML.js - v@VERSION@
  *
  *
  * The MIT License
