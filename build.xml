@@ -1,6 +1,6 @@
 <project name="raphuml" default="build">
 
-  <property name="version" value="0.3"/>
+  <property name="version" value="0.4-SNAPSHOT"/>
 
   <property name="jscc" value="/opt/jscc"/>
   <property name="rhino" value="/usr/bin/rhino"/>
