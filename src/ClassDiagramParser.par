@@ -113,6 +113,7 @@ assoc-def           : 'assoc' end-point assoc-type end-point '\n'
     var ep2 = parsedEndPoints.shift();
     var toClass = parsedClassDiagram.findClass(ep2[0]);
     parsedClassDiagram.associationFrom(fromClass, ep1[1]).to(toClass, ep2[1], %3);
+    parsedEndPoints = [];
 *]
 
                     ;
