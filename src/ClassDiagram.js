@@ -123,6 +123,7 @@ var straightLineRouter = function(paper, classDiagram) {
  */
 var ClassDiagram = function() {
 
+    this.elements = [];
     this.associations = [];
     this.classes = [];
 
@@ -139,12 +140,14 @@ ClassDiagram.prototype.associationFrom = function (class, cardinality) {
     var assoc = new Association();
     assoc.fromClass = class;
     assoc.fromCardinality = cardinality;
+    this.elements.push(assoc);
     this.associations.push(assoc);
     return assoc;
 }
 
 ClassDiagram.prototype.class = function (name, x, y) {
     var class = new Class(this, name, x, y);
+    this.elements.push(class);
     this.classes.push(class);
     return class;
 }
@@ -166,6 +169,13 @@ ClassDiagram.prototype.findClass = function (name) {
     throw 'Class not found: ' + name;
 }
 
+ClassDiagram.prototype.toString = function () {
+    var s = '';
+    for (var i = 0; i < this.elements.length; i++) {
+        s += this.elements[i].toString() + '\n';
+    }
+    return s;
+}
 
 
 /* Parses and returns a class diagram, using our class diagram DSL.
@@ -217,8 +227,27 @@ Association.prototype.name = function (name) {
 Association.prototype.to = function (class, cardinality, type) {
     this.toClass = class;
     this.toCardinality = cardinality;
-    this.type = type;
+    this.type = type || 'to';
     return this;
+}
+
+Association.prototype.toString = function () {
+
+    var s = 'assoc ' + this.fromClass;
+
+    if (this.fromCardinality) {
+        s += '(' + this.fromCardinality + ')';
+    }
+
+    s += ' ' + this.type + ' ' + this.toClass;
+
+    if (this.toCardinality) {
+        s += '(' + this.toCardinality + ')';
+    }
+
+    s += '\n';
+
+    return s;
 }
 
 
@@ -238,6 +267,7 @@ var Class = function(classDiagram, name, x, y) {
 
     this.attributes = [];
     this.operations = [];
+    this.propKeys = [];
 }
 
 Class.prototype.attribute = function (attributeString) {
@@ -312,15 +342,66 @@ Class.prototype.operation = function (operationString) {
     return this;
 }
 
+Class.prototype.property = function (key, value) {
+    if (this.propKeys.indexOf(key) == -1) {
+        this.propKeys.push(key);
+    }
+    this[key] = value;
+}
+
+Class.prototype.toString = function () {
+
+    var props = '';
+
+    for (var i = 0; i < this.propKeys.length; i++) {
+        var key = this.propKeys[i];
+        if (props) {
+            props += ', ';
+        }
+        props += key + '=' + this[key];
+    }
+
+    if (props) {
+        var s = 'class ' + this.name + '\n( ' + props + ' )\n';
+    } else {
+        var s = 'class ' + this.name + '\n';
+    }
+
+    if (this.attributes.length > 0 || this.operations.length > 0) {
+        s += '--\n';
+    }
+
+    for (var i = 0; i < this.attributes.length; i++) {
+        s += this.attributes[i] + '\n';
+    }
+
+    if (this.operations.length > 0) {
+        s += '--\n';
+    }
+
+    for (var i = 0; i < this.operations.length; i++) {
+        s += this.operations[i] + '\n';
+    }
+
+    return s;
+}
 
 var Attribute = function(class, attributeString) {
     this.class = class;
     this.attributeString = attributeString;
 }
 
+Attribute.prototype.toString = function () {
+    return this.attributeString;
+}
+
 var Operation = function(class, operationString) {
     this.class = class;
     this.operationString = operationString;
+}
+
+Operation.prototype.toString = function () {
+    return this.operationString;
 }
 
 

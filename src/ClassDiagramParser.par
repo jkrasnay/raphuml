@@ -4,10 +4,12 @@
 
     var parsedAttributes = [];
     var parsedClassDiagram;
+    var parsedClassOffset;
     var parsedConstant;
     var parsedEndPoints = [];
     var parsedMulti;
     var parsedOperations = [];
+    var parsedPropKeys = [];
     var parsedProperties = { };
 
 *]
@@ -62,13 +64,19 @@ class-def           : 'class' IDENT '\n' properties attrs-ops
         currentClass.operation(parsedOperations[i]);
     }
 
-    for (var key in parsedProperties) {
+    for (var i = 0; i < parsedPropKeys.length; i++) {
+        var key = parsedPropKeys[i];
+        currentClass.property(key, parsedProperties[key]);
+    }
+
+    for (var key in parsedPropKeysk) {
         currentClass[key] = parsedProperties[key];
     }
 
     parsedAttributes = [];
     parsedOperations = [];
-    parsedProperties = [];
+    parsedPropKeys = [];
+    parsedProperties = { };
 *]
                     ;
 
@@ -80,7 +88,7 @@ property-list       : property-list ',' property
                     | property
                     ;
 
-property            : IDENT '=' constant                        [* parsedProperties[%1] = parsedConstant; *]
+property            : IDENT '=' constant                        [* parsedPropKeys.push(%1); parsedProperties[%1] = parsedConstant; *]
                     ;
 
 constant            : DIGITS                                    [* parsedConstant = Number(%1); *]

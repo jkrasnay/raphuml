@@ -27,7 +27,7 @@
     <loadfile property="CLASS_DIAGRAM"        srcFile="src/ClassDiagram.js"/>
     <loadfile property="CLASS_DIAGRAM_PARSER" srcFile="target/ClassDiagramParser.js"/>
 
-    <copy file="src/raphuml.js" toFile="target/raphuml-${version}.js" overwrite="true">
+    <copy file="src/raphuml.js" toFile="target/raphuml.js" overwrite="true">
       <filterset>
         <filter token="VERSION"              value="${version}"/>
         <filter token="CLASS_DIAGRAM"        value="${CLASS_DIAGRAM}"/>
@@ -42,8 +42,8 @@
     <mkdir dir="${fulldir}"/>
     <copy todir="${fulldir}">
       <fileset dir="lib" includes="*" excludes="qunit.*"/>
-      <fileset dir="target" includes="raphuml-${version}.js"/>
     </copy>
+    <copy file="target/raphuml.js" toFile="${fulldir}/raphuml-${version}.js"/>
 
     <mkdir dir="${fulldir}/studio"/>
     <copy todir="${fulldir}/studio">
@@ -67,7 +67,7 @@
       </condition>
     </fail>
 
-    <copy file="target/raphuml-${version}.js" toDir="dist"/>
+    <copy file="target/raphuml.js" toFile="dist/raphuml-${version}.js"/>
 
     <zip destfile="dist/raphuml-${version}-full.zip" basedir="target" includes="raphuml-${version}/**/*"/>
 
