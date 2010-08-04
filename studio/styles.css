@@ -1,0 +1,54 @@
+body {
+  background-color: #9ca28b;
+}
+
+div#body {
+  padding: 10px;
+}
+
+h1 {
+  color: white;
+  margin: 0;
+  text-shadow: #000 2px 2px 6px;
+}
+
+#errorMessage {
+  padding: 5px;
+}
+
+.errorMessageActive {
+  border: 1px solid;
+  background-color: #ffc;
+}
+
+#copyright {
+  color: #555;
+  font-style: italic;
+  margin: 3px 0;
+  padding: 0;
+}
+
+#copyright a {
+  color: #555;
+}
+
+textarea {
+  background-color: white;
+}
+
+#diagram {
+  background-color: white;
+  border: 1px solid;
+  box-shadow: 2px 2px 6px;
+  -moz-box-shadow: 2px 2px 6px;
+  -webkit-box-shadow: 2px 2px 6px;
+}
+
+#controls {
+  height: 30px;
+}
+
+#redraw {
+  float: right;
+}
+

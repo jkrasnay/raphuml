@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>RaphUML Studio</title>
+  <link rel="stylesheet" type="text/css" href="styles.css"/>
+  <script src="../jquery-1.4.2.min.js"></script>
+  <script src="../raphael-1.4.7.min.js"></script>
+  <script src="../raphuml-0.4-SNAPSHOT.js"></script>
+  <script src="jquery-ui-1.8.2.custom.min.js"></script>
+  <script src="jquery.layout.min-1.2.0.js"></script>
+  <script src="main.js"></script>
+</head>
+<body>
+  <div id="body" class="ui-layout-center">
+
+    <div class="ui-layout-north">
+      <h1>RaphUML Studio</h1>
+      <p id="errorMessage"></p>
+    </div>
+
+    <div id="diagram" class="ui-layout-center"></div>
+
+    <div id="editor" class="ui-layout-west">
+
+      <textarea id="script" class="ui-layout-center">
+class Person
+( x=10, y=10 )
+--
++name: String
++age: int
+
+class Department
+( x=200, y=10 )
+--
++name: String
+
+assoc Person(0..*) to Department(1)
+
+class DepartmentDao
+( x=10, y=150, width=300 )
+--
+--
++insert(dept: Department): void
++update(dept: Department): void
+
+class DepartmentDaoImpl
+( x=10, y=250, width=300 )
+--
+--
++setDataSource(ds: DataSource): void
+
+assoc DepartmentDaoImpl implements DepartmentDao
+
+</textarea>
+
+      <div id="controls" class="ui-layout-south">
+        <input id="redraw" type="submit" value="Re-draw" onclick='reDraw()'>
+      </div>
+
+    </div>
+
+    <div class="ui-layout-south">
+      <p id="copyright">
+        <a href="http://github.com/jkrasnay/raphuml">RaphUML</a> is copyright &copy; 2010 John Krasnay and is open-source software under the MIT license. Enjoy!
+      </p>
+    </div>
+
+  </div> 
+</body>
+</html>
+
