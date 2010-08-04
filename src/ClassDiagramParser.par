@@ -69,7 +69,7 @@ class-def           : 'class' IDENT '\n' properties attrs-ops
         currentClass.property(key, parsedProperties[key]);
     }
 
-    for (var key in parsedPropKeysk) {
+    for (var key in parsedPropKeys) {
         currentClass[key] = parsedProperties[key];
     }
 

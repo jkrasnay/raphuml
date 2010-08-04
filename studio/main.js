@@ -1,21 +1,31 @@
 
+var classDiagram;
 var paper;
 
 var setError = function (message) {
     if (message) {
-        $('#errorMessage').text(message).addClass('errorMessageActive');
+        $('#errorMessage').text(message.toString()).addClass('errorMessageActive');
     } else {
         $('#errorMessage').text('').removeClass('errorMessageActive');
     }
 };
+
+/**
+ * Called when the user drags a class diagram and drops it in a different
+ * location.
+ */
+var onChange = function () {
+    $('#script').val(classDiagram.toString());
+    reDraw();
+}
 
 var reDraw = function () {
     try {
         setError();
         paper.clear();
         paper.setSize($('#diagram').innerWidth(), $('#diagram').innerHeight());
-        var classDiagram = RaphUML.parseClassDiagram($('#script').val());
-        classDiagram.draw(paper);
+        classDiagram = RaphUML.parseClassDiagram($('#script').val());
+        classDiagram.draw(paper, { draggable: true, onChange: onChange });
     } catch (e) {
         if (e.offset) {
             setError('Error at offset ' + e.offset + ': ' + e.message);

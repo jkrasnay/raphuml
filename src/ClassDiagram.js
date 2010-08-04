@@ -113,8 +113,7 @@ var straightLineRouter = function(paper, classDiagram) {
 
 
 
-/* ClassDiagram
- *
+/**
  * Instances of ClassDiagram are responsible for drawing a class diagram.
  * They keep track of lists of Class and Association objects, and parameters
  * to control the drawing operation.
@@ -136,6 +135,15 @@ var ClassDiagram = function() {
     this.router = straightLineRouter;
 }
 
+/**
+ * Creates and returns an association from the given class.
+ *
+ * @param class
+ *      Class object representing one end of the association.
+ *
+ * @param cardinality
+ *      Multiplicity of the given class's end of the association.
+ */
 ClassDiagram.prototype.associationFrom = function (class, cardinality) {
     var assoc = new Association();
     assoc.fromClass = class;
@@ -145,6 +153,18 @@ ClassDiagram.prototype.associationFrom = function (class, cardinality) {
     return assoc;
 }
 
+/**
+ * Creates and returns a class object.
+ *
+ * @param name
+ *      Name of the class.
+ *
+ * @param x
+ *      x-coordinate at which to draw the class.
+ *
+ * @param y
+ *      y-coordinate at which to draw the class.
+ */
 ClassDiagram.prototype.class = function (name, x, y) {
     var class = new Class(this, name, x, y);
     this.elements.push(class);
@@ -152,10 +172,31 @@ ClassDiagram.prototype.class = function (name, x, y) {
     return class;
 }
 
-ClassDiagram.prototype.draw = function(paper) {
+/**
+ * Draw the diagram on the given Raphael object.
+ *
+ * Options are as follows:
+ *
+ * draggable - If true, classes on the diagram are draggable.
+ *             Calls the function passed in the onChange option
+ *             when the class is dropped.
+ *             Defaults to false.
+ *
+ * onChange  - Function called when a class is dragged and dropped.
+ *
+ * @param paper Raphael surface on which to draw the diagram.
+ * @param options (Optional) Options controlling the drawing.
+ */
+ClassDiagram.prototype.draw = function(paper, options) {
+
+    var opts = { };
+    for (var key in options) {
+        opts[key] = options[key];
+    }
+
     this.router(paper, this);
     for (var i = 0; i < this.classes.length; i++) {
-        this.classes[i].draw(paper);
+        this.classes[i].draw(paper, opts);
     }
 
 }
@@ -233,13 +274,13 @@ Association.prototype.to = function (class, cardinality, type) {
 
 Association.prototype.toString = function () {
 
-    var s = 'assoc ' + this.fromClass;
+    var s = 'assoc ' + this.fromClass.name;
 
     if (this.fromCardinality) {
         s += '(' + this.fromCardinality + ')';
     }
 
-    s += ' ' + this.type + ' ' + this.toClass;
+    s += ' ' + this.type + ' ' + this.toClass.name;
 
     if (this.toCardinality) {
         s += '(' + this.toCardinality + ')';
@@ -291,9 +332,12 @@ Class.prototype.cy = function() {
     return this.y + this.height / 2;
 }
 
-Class.prototype.draw = function(paper) {
+Class.prototype.draw = function(paper, options) {
 
-    paper.rect(this.x, this.y, this.width, this.height).attr({ fill: 'white' });
+    var set = paper.set();
+
+    var rect = paper.rect(this.x, this.y, this.width, this.height).attr({ fill: 'white', cursor: 'move' });
+    set.push(rect);
 
     var text = paper.text(0, 0, this.name).attr({
         'font-weight': 'bold',
@@ -301,32 +345,76 @@ Class.prototype.draw = function(paper) {
         x: this.x + this.width/2,
         y: this.y + this.classDiagram.headingVPad + this.classDiagram.headingFontSize/2
     });
+    set.push(text);
 
     var x = this.x + this.classDiagram.bodyHPad;
     var y = this.y + this.classDiagram.headingFontSize + 2 * this.classDiagram.headingVPad;
 
     if (this.attributes.length > 0) {
 
-        paper.path('M' + this.x + ' ' + y + 'L' + (this.x + this.width) + ' ' + y);
+        set.push(paper.path('M' + this.x + ' ' + y + 'L' + (this.x + this.width) + ' ' + y));
 
         y += this.classDiagram.bodyVPad;
         for (var i = 0; i < this.attributes.length; i++) {
-            var text = paper.text(0, 0, this.attributes[i].attributeString).anchor(1, x, y, 0, 0);
+            var text = paper.text(0, 0, this.attributes[i].attributeString);
+            text.anchor(1, x, y, 0, 0);
+            set.push(text);
             y += this.classDiagram.bodyFontSize + this.classDiagram.bodyVPad;
         }
     }
 
     if (this.operations.length > 0) {
 
-        paper.path('M' + this.x + ' ' + y + 'L' + (this.x + this.width) + ' ' + y);
+        set.push(paper.path('M' + this.x + ' ' + y + 'L' + (this.x + this.width) + ' ' + y));
 
         y += this.classDiagram.bodyVPad;
         for (var i = 0; i < this.operations.length; i++) {
-            var text = paper.text(0, 0, this.operations[i].operationString).anchor(1, x, y, 0, 0);
+            var text = paper.text(0, 0, this.operations[i].operationString);
+            text.anchor(1, x, y, 0, 0);
+            set.push(text);
             y += this.classDiagram.bodyFontSize + this.classDiagram.bodyVPad;
         }
     }
 
+    var self = this;
+
+    var start = function (x, y) {
+        set.toFront();
+        set.attr('opacity', 0.5);
+        set.qx = self.x;
+        set.qy = self.y;
+    };
+
+    var move = function (mx, my) {
+
+        // mx, my is the distance moved since the drag started
+        //
+        // qy, qy is the 'quantized' coordinates to which the shape is moved
+        // These are rounded to the nearest 10
+        //
+
+        var qx = round(self.x + mx, 10);
+        var qy = round(self.y + my, 10);
+
+        set.translate(qx - set.qx, qy - set.qy);
+
+        set.qx = qx;
+        set.qy = qy;
+
+    };
+
+    var end = function () {
+        set.attr('opacity', 1.0);
+        self.property('x', set.qx);
+        self.property('y', set.qy);
+        options.onChange();
+    };
+
+    if (options.draggable) {
+        rect.drag(move, start, end);
+    }
+
+    return set;
 }
 
 Class.prototype.operation = function (operationString) {
@@ -405,6 +493,14 @@ Operation.prototype.toString = function () {
 }
 
 
+var round = function (x, quantum) {
+    var r = x % quantum;
+    if (r < quantum / 2) {
+        return x - r;
+    } else {
+        return x - r + quantum;
+    }
+}
 
 /* seg_intersect
  *
