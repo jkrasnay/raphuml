@@ -189,23 +189,20 @@ if (jQuery) {
             return this.each(function () {
 
                 var script = $(this);
-                var offset = script.offset();
+                //var offset = script.offset();
 
-                var diagram = $('<div></div>')
-                    .css('position', 'absolute')
-                    .css('left', offset.left)
-                    .css('top', offset.top)
-                    .css('width', script.innerWidth())
-                    .css('height', script.innerHeight());
+                var diagramDiv = $('<div></div>').addClass('classDiagram');
 
-                script.after(diagram);
+                script.after(diagramDiv);
 
-                var paper = Raphael(diagram.get(0), script.innerWidth(), script.innerHeight());
+                var paper = Raphael(diagramDiv.get(0), 10000, 10000);
 
                 try {
                     var diagram = RaphUML.parseClassDiagram(script.text());
                     diagram.draw(paper);
-                    script.css('visibility', 'hidden');
+                    var b = diagram.getBounds();
+                    diagramDiv.css('width', b.x + b.width).css('height', b.y + b.height);
+                    script.css('display', 'none');
                 } catch (e) {
                     if (e.offset) {
                         diagram.text('Error at offset ' + e.offset + ': ' + e.message);

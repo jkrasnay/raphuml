@@ -210,6 +210,29 @@ ClassDiagram.prototype.findClass = function (name) {
     throw 'Class not found: ' + name;
 }
 
+/**
+ * Returns the bounds of the diagram, in the form of an
+ * object with attributes x, y, width, and height.
+ */
+ClassDiagram.prototype.getBounds = function () {
+
+    if (this.classes.length ==0) {
+        return { x: 0, y: 0, width: 0, height: 0 };
+    }
+
+    var top = 1000000, left = 1000000, bottom = 0, right = 0;
+    for (var i = 0; i < this.classes.length; i++) {
+        var c = this.classes[i];
+        if (c.x < left) { left = c.x; }
+        if (c.y < top) { top = c.y; }
+        if (c.x + c.width > right) { right = c.x + c.width; }
+        if (c.y + c.height > bottom) { bottom = c.y + c.height; }
+    }
+
+    return { x: left, y: top, width: (right - left), height: (bottom - top) };
+
+}
+
 ClassDiagram.prototype.toString = function () {
     var s = '';
     for (var i = 0; i < this.elements.length; i++) {
