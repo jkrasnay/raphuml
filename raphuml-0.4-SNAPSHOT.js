@@ -979,7 +979,7 @@ switch( act )
 	case 6:
 	{
 		
-    var currentClass = parsedClassDiagram.class(vstack[ vstack.length - 4 ], 0, 0);
+    var currentClass = parsedClassDiagram.addClass(vstack[ vstack.length - 4 ], 0, 0);
 
     for (var i = 0; i < parsedAttributes.length; i++) {
         currentClass.attribute(parsedAttributes[i]);
@@ -1371,7 +1371,7 @@ ClassDiagram.prototype.associationFrom = function (class, cardinality) {
  * @param y
  *      y-coordinate at which to draw the class.
  */
-ClassDiagram.prototype.class = function (name, x, y) {
+ClassDiagram.prototype.addClass = function (name, x, y) {
     var class = new Class(this, name, x, y);
     this.elements.push(class);
     this.classes.push(class);
@@ -1421,7 +1421,7 @@ ClassDiagram.prototype.findClass = function (name) {
  * object with attributes x, y, width, and height.
  */
 ClassDiagram.prototype.getBounds = function () {
-    
+
     if (this.classes.length ==0) {
         return { x: 0, y: 0, width: 0, height: 0 };
     }
