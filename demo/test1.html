@@ -14,14 +14,14 @@
 
             var diagram = RaphUML.classDiagram();
 
-            var cd = diagram.class("ClassDiagram", 0, 0)
+            var cd = diagram.addClass("ClassDiagram", 0, 0)
             .attribute("+id: int")
             .attribute("+name: String");
 
-            var c = diagram.class("Class", 200, 0)
+            var c = diagram.addClass("Class", 200, 0)
               .attribute("+name: String");
 
-            var a = diagram.class("Attribute", 200, 200)
+            var a = diagram.addClass("Attribute", 200, 200)
               .attribute("+attributeString: String");
 
             diagram.associationFrom(cd, '1').name('classes').to(c, '0..*');

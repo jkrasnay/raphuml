@@ -165,7 +165,7 @@ ClassDiagram.prototype.associationFrom = function (class, cardinality) {
  * @param y
  *      y-coordinate at which to draw the class.
  */
-ClassDiagram.prototype.class = function (name, x, y) {
+ClassDiagram.prototype.addClass = function (name, x, y) {
     var class = new Class(this, name, x, y);
     this.elements.push(class);
     this.classes.push(class);

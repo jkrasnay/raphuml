@@ -54,7 +54,7 @@ stmt                : class-def
 class-def           : 'class' IDENT '\n' properties attrs-ops
 
 [*
-    var currentClass = parsedClassDiagram.class(%2, 0, 0);
+    var currentClass = parsedClassDiagram.addClass(%2, 0, 0);
 
     for (var i = 0; i < parsedAttributes.length; i++) {
         currentClass.attribute(parsedAttributes[i]);

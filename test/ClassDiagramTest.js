@@ -2,65 +2,65 @@
 module ('Class.toString');
 
 test('Empty Class', function () {
-    var c = RaphUML.classDiagram().class('Foo');
+    var c = RaphUML.classDiagram().addClass('Foo');
     equals(c.toString(), 'class Foo\n');
 });
 
 test('One Property', function () {
-    var c = RaphUML.classDiagram().class('Foo');
+    var c = RaphUML.classDiagram().addClass('Foo');
     c.property('x', 10);
     equals(c.toString(), 'class Foo\n( x=10 )\n');
 });
 
 test('Two Properties', function () {
-    var c = RaphUML.classDiagram().class('Foo');
+    var c = RaphUML.classDiagram().addClass('Foo');
     c.property('x', 10);
     c.property('y', 20);
     equals(c.toString(), 'class Foo\n( x=10, y=20 )\n');
 });
 
 test('Two Properties - Reverse Order', function () {
-    var c = RaphUML.classDiagram().class('Foo');
+    var c = RaphUML.classDiagram().addClass('Foo');
     c.property('y', 20);
     c.property('x', 10);
     equals(c.toString(), 'class Foo\n( y=20, x=10 )\n');
 });
 
 test('One Attribute', function () {
-    var c = RaphUML.classDiagram().class('Foo');
+    var c = RaphUML.classDiagram().addClass('Foo');
     c.attribute('+id: int');
     equals(c.toString(), 'class Foo\n--\n+id: int\n');
 });
 
 test('Two Attributes', function () {
-    var c = RaphUML.classDiagram().class('Foo');
+    var c = RaphUML.classDiagram().addClass('Foo');
     c.attribute('+id: int');
     c.attribute('+name: String');
     equals(c.toString(), 'class Foo\n--\n+id: int\n+name: String\n');
 });
 
 test('Attributes and Properties', function () {
-    var c = RaphUML.classDiagram().class('Foo');
+    var c = RaphUML.classDiagram().addClass('Foo');
     c.property('x', 10);
     c.attribute('+id: int');
     equals(c.toString(), 'class Foo\n( x=10 )\n--\n+id: int\n');
 });
 
 test('One Operation', function () {
-    var c = RaphUML.classDiagram().class('Foo');
+    var c = RaphUML.classDiagram().addClass('Foo');
     c.operation('+foo()');
     equals(c.toString(), 'class Foo\n--\n--\n+foo()\n');
 });
 
 test('Two Operations', function () {
-    var c = RaphUML.classDiagram().class('Foo');
+    var c = RaphUML.classDiagram().addClass('Foo');
     c.operation('+foo()');
     c.operation('+bar()');
     equals(c.toString(), 'class Foo\n--\n--\n+foo()\n+bar()\n');
 });
 
 test('Bit of Everything', function () {
-    var c = RaphUML.classDiagram().class('Foo');
+    var c = RaphUML.classDiagram().addClass('Foo');
     c.property('x', 10);
     c.attribute('+id: int');
     c.operation('+foo()');
@@ -104,8 +104,8 @@ test('Empty', function () {
 
 test('Lots', function () {
     var cd = RaphUML.classDiagram();
-    cd.class('Foo');
-    cd.class('Bar');
+    cd.addClass('Foo');
+    cd.addClass('Bar');
     cd.associationFrom('Foo').to('Bar');
     equals(cd.toString(), 'class Foo\n\nclass Bar\n\nassoc Foo to Bar\n\n');
 });
