@@ -144,9 +144,9 @@ var ClassDiagram = function() {
  * @param cardinality
  *      Multiplicity of the given class's end of the association.
  */
-ClassDiagram.prototype.associationFrom = function (class, cardinality) {
+ClassDiagram.prototype.associationFrom = function (clazz, cardinality) {
     var assoc = new Association();
-    assoc.fromClass = class;
+    assoc.fromClass = clazz;
     assoc.fromCardinality = cardinality;
     this.elements.push(assoc);
     this.associations.push(assoc);
@@ -166,10 +166,10 @@ ClassDiagram.prototype.associationFrom = function (class, cardinality) {
  *      y-coordinate at which to draw the class.
  */
 ClassDiagram.prototype.addClass = function (name, x, y) {
-    var class = new Class(this, name, x, y);
-    this.elements.push(class);
-    this.classes.push(class);
-    return class;
+    var clazz = new Class(this, name, x, y);
+    this.elements.push(clazz);
+    this.classes.push(clazz);
+    return clazz;
 }
 
 /**
@@ -288,8 +288,8 @@ Association.prototype.name = function (name) {
 /*
  * type is one of 'extends', 'has', 'implements', 'owns', 'nav-to', 'to', 'uses'
  */
-Association.prototype.to = function (class, cardinality, type) {
-    this.toClass = class;
+Association.prototype.to = function (clazz, cardinality, type) {
+    this.toClass = clazz;
     this.toCardinality = cardinality;
     this.type = type || 'to';
     return this;
@@ -497,8 +497,8 @@ Class.prototype.toString = function () {
     return s;
 }
 
-var Attribute = function(class, attributeString) {
-    this.class = class;
+var Attribute = function(clazz, attributeString) {
+    this.clazz = clazz;
     this.attributeString = attributeString;
 }
 
@@ -506,8 +506,8 @@ Attribute.prototype.toString = function () {
     return this.attributeString;
 }
 
-var Operation = function(class, operationString) {
-    this.class = class;
+var Operation = function(clazz, operationString) {
+    this.clazz = clazz;
     this.operationString = operationString;
 }
 
